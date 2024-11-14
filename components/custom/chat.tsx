@@ -1,22 +1,24 @@
 'use client';
 
-import { Attachment, Message } from 'ai';
 import { useChat } from 'ai/react';
 import { AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
 import { ChatHeader } from '@/components/custom/chat-header';
 import { PreviewMessage, ThinkingMessage } from '@/components/custom/message';
 import { useScrollToBottom } from '@/components/custom/use-scroll-to-bottom';
-import { Database } from '@/lib/supabase/types';
 import { fetcher } from '@/lib/utils';
 
-import { Block, UIBlock } from './block';
+import { Block } from './block';
 import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
+
+import type { UIBlock } from './block';
+import type { Database } from '@/lib/supabase/types';
+import type { Attachment, Message } from 'ai';
 
 type Vote = Database['public']['Tables']['votes']['Row'];
 
@@ -30,6 +32,8 @@ export function Chat({
   selectedModelId: string;
 }) {
   const { mutate } = useSWRConfig();
+  const { width: windowWidth = 1920, height: windowHeight = 1080 } =
+    useWindowSize();
 
   const {
     messages,
@@ -49,9 +53,6 @@ export function Chat({
     },
   });
 
-  const { width: windowWidth = 1920, height: windowHeight = 1080 } =
-    useWindowSize();
-
   const [block, setBlock] = useState<UIBlock>({
     documentId: 'init',
     content: '',
@@ -59,8 +60,8 @@ export function Chat({
     status: 'idle',
     isVisible: false,
     boundingBox: {
-      top: windowHeight / 4,
-      left: windowWidth / 4,
+      top: typeof window !== 'undefined' ? window.innerHeight / 4 : windowHeight / 4,
+      left: typeof window !== 'undefined' ? window.innerWidth / 4 : windowWidth / 4,
       width: 250,
       height: 50,
     },
@@ -76,7 +77,12 @@ export function Chat({
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
 
-  console.log(messages);
+  // Move console.log to useEffect to avoid SSR issues
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(messages);
+    }
+  }, [messages]);
 
   return (
     <>
@@ -96,11 +102,7 @@ export function Chat({
               block={block}
               setBlock={setBlock}
               isLoading={isLoading && messages.length - 1 === index}
-              vote={
-                votes
-                  ? votes.find((vote) => vote.message_id === message.id)
-                  : undefined
-              }
+              vote={votes?.find((vote) => vote.message_id === message.id)}
             />
           ))}
 
@@ -133,7 +135,7 @@ export function Chat({
       </div>
 
       <AnimatePresence>
-        {block && block.isVisible && (
+        {block?.isVisible && (
           <Block
             chatId={id}
             input={input}
