@@ -58,15 +58,6 @@ This template ships with OpenAI `gpt-4o` as the default. However, with the [AI S
 
 </div>
 
-## Running locally
-
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
-
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various OpenAI and authentication provider accounts.
-
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
 
 ## Getting Started
 
@@ -154,8 +145,8 @@ Before you begin, ensure you have the following installed:
 1. **Clone and Install**
 
    ```bash
-   git clone https://github.com/your-username/ai-chatbot.git
-   cd ai-chatbot
+   git clone https://github.com/your-username/ai-chatbot-supabase.git
+   cd ai-chatbot-supabase
    pnpm install
    ```
 
@@ -182,14 +173,13 @@ Common issues and solutions:
 - **Supabase Connection Issues**
 
   - Verify your environment variables are correctly set
-  - Ensure your IP address is allowed in Supabase dashboard
   - Check if the database is active in Supabase dashboard
 
 - **Build Errors**
   - Clear `.next` folder: `rm -rf .next`
   - Clean install dependencies: `pnpm clean-install`
 
-For more help, check our [Troubleshooting Guide](docs/troubleshooting.md) or open an issue.
+For more help, open an issue.
 
 ## Deploy with Vercel
 
@@ -204,7 +194,7 @@ For more help, check our [Troubleshooting Guide](docs/troubleshooting.md) or ope
 1. **Fork the Repository**
 
    ```bash
-   https://github.com/your-username/ai-chatbot
+   https://github.com/your-username/ai-chatbot-supabase
    ```
 
 2. **Configure Vercel Project**
@@ -235,61 +225,3 @@ OPENAI_API_KEY=                     # Your OpenAI API key
    - Click "Deploy"
    - Vercel will automatically build and deploy your application
 
-### One-Click Deploy
-
-Alternatively, you can use our one-click deploy button:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot&env=AUTH_SECRET,OPENAI_API_KEY,NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=How%20to%20get%20these%20env%20variables&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot%2Fblob%2Fmain%2F.env.example)
-
-### Post-Deployment Configuration
-
-1. **Update Supabase Configuration**
-
-   - Go to your Supabase project settings
-   - Add your deployed URL to the allowed domains:
-     ```
-     https://your-app.vercel.app
-     ```
-
-2. **Verify Environment Variables**
-   In Vercel dashboard:
-
-   - Go to Project Settings > Environment Variables
-   - Verify all required variables are set
-   - If needed, redeploy after updating variables
-
-3. **Setup Database**
-
-   ```bash
-   # Install Supabase CLI if you haven't
-   npm install -g supabase
-
-   # Link to your Supabase project
-   supabase link --project-ref your-project-ref
-
-   # Push the database schema
-   supabase db push
-   ```
-
-### Troubleshooting Deployment
-
-Common deployment issues and solutions:
-
-- **Build Failures**
-
-  - Check build logs in Vercel dashboard
-  - Verify all dependencies are installed
-  - Ensure environment variables are set correctly
-
-- **Runtime Errors**
-
-  - Check Function Logs in Vercel dashboard
-  - Verify Supabase connection settings
-  - Check API routes are functioning
-
-- **Database Connection Issues**
-  - Verify Supabase URL and keys
-  - Check if IP is allowed in Supabase dashboard
-  - Ensure database migrations are applied
-
-For more deployment help, see our [Deployment Guide](docs/deployment.md) or open an issue.
